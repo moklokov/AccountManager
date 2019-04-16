@@ -1,0 +1,21 @@
+export let user = {
+  avatar: '',
+  username: 'test',
+  password: 'test',
+  repeatPassword: 'test',
+  firstname: 'Test',
+  lastname: 'Testov',
+  birthdate: new Date(new Date().setYear(1989)),
+  email: 'test@mail.com',
+  gender: 'male',
+  address: 'Sumy str',
+  phone: '0501111111',
+  fax: '',
+  company: 'Test company',
+  githublink: '',
+  facebook: '',
+  language: 'uk',
+  skills: ['HTML', 'CSS', 'JavaScript'],
+  info: '',
+  hobbies: []
+}
