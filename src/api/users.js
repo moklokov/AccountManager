@@ -1,27 +1,61 @@
-export function getUsers() {
-  //TODO implement get from DB
+import { openDB } from 'idb';
+
+async function getDB(dbName = 'AccountManager') {
+   const db = await openDB(dbName, 1, {
+    upgrade(db) {
+      if (!db.objectStoreNames.contains('users')) {
+        const users = db.createObjectStore('users', {
+          keyPath: 'id',
+          autoIncrement: true,
+        });
+        users.createIndex('username', 'username', { unique: true });
+        users.createIndex('email', 'email', { unique: true });
+      }
+    }
+  });
+  return db;
 }
 
-export function getUser(id) {
-  //TODO implement get from DB
+export async function getUsers() {
+  const db = await getDB();
+  return db.getAll('users');
 }
 
-export function getUserByUsername(username) {
-  //TODO implement get from DB
+export async function getUser(id) {
+  const db = await getDB();
+  return db.get('users', id);
 }
 
-export function getUserByEmail(email) {
-  //TODO implement get from DB
+export async function getUserByUsername(username) {
+  const db = await getDB();
+  return db.getFromIndex('users', 'username', username);
 }
 
-export function createUser(attrs) {
-  //TODO implement created to DB
+export async function getUserByEmail(email) {
+  const db = await getDB();
+  return db.getFromIndex('users', 'email', email);
 }
 
-export function updateUser(id, attrs) {
-  //TODO implement updated in DB
+export async function createUser(attrs) {
+  const db = await getDB();
+  const id = await db.add('users', attrs);
+  return { ...attrs, id }
 }
 
-export function removeUser(id) {
-  //TODO implement removed from DB
+export async function updateUser(id, attrs) {
+  const user = await getUser(id);
+  const db = await getDB();
+  const updateUser = { ...user, ...attrs }
+  await db.put('users', updateUser);
+  return updateUser;
+}
+
+export async function removeUser(id) {
+  const db = await getDB();
+  return db.delete('users', id);
+}
+
+export async function clear() {
+  const db = await getDB();
+  return db.clear('users');
 }

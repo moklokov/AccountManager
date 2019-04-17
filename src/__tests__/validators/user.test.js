@@ -1,4 +1,5 @@
 jest.mock('../../api/users');
+import 'fake-indexeddb/auto'
 import validator from '../../validators/user'
 import { user } from '../../__fixtures__/users'
 import { getUserByUsername, getUserByEmail } from '../../api/users'
