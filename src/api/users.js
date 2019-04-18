@@ -42,12 +42,10 @@ export async function createUser(attrs) {
   return { ...attrs, id }
 }
 
-export async function updateUser(id, attrs) {
-  const user = await getUser(id);
+export async function updateUser(user) {
   const db = await getDB();
-  const updateUser = { ...user, ...attrs }
-  await db.put('users', updateUser);
-  return updateUser;
+  await db.put('users', user);
+  return user;
 }
 
 export async function removeUser(id) {

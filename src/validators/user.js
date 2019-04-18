@@ -12,11 +12,11 @@ function validationAvatar(avatar) {
   return errors
 }
 
-function validationUsername(username) {
+async function validationUsername(id, username) {
   let errors = presentValidator(username);
   if (!errors.length) {
-    const user = getUserByUsername(username);
-    if (user) {
+    const user = await getUserByUsername(username);
+    if (user && user.id != id) {
       errors.push('уже существует');
     }
   }
@@ -81,20 +81,20 @@ function validationInfo(info) {
   return info.length <= 300 ? [] : ['не более 300 символов']
 }
 
-function validationEmail(email) {
+async function validationEmail(id, email) {
   let errors = presentValidator(email);
   if (!errors.length) {
-    let user = getUserByEmail(email);
-    if (user) {
+    let user = await getUserByEmail(email);
+    if (user && user.id != id) {
       errors.push('уже существует');
     }
   }
   return errors;
 }
 
-export default function validation(user) {
-  const validators = ['avatar', 'username', 'password', 'firstname', 'lastname', 'birthdate', 'gender', 'company',
-      'language', 'skills', 'info', 'email'];
+export default async function validation(user) {
+  const validators = ['avatar', 'password', 'firstname', 'lastname', 'birthdate', 'gender', 'company',
+      'language', 'skills', 'info'];
   let errors = validators.reduce((errors, field) => {
     const fieldValidator = eval(`validation${field.charAt(0).toUpperCase()}${field.slice(1)}`)
     const fieldErrors = fieldValidator(user[field]);
@@ -106,6 +106,14 @@ export default function validation(user) {
   const repeatPasswordErrors = validationRepeatPassword(user.password, user.repeatPassword);
   if (repeatPasswordErrors.length) {
     errors['repeatPassword'] = repeatPasswordErrors
+  }
+  const usernameErrors = await validationUsername(user.id, user.username);
+  if (usernameErrors.length) {
+    errors['username'] = usernameErrors;
+  }
+  const emailErrors = await validationEmail(user.id, user.email);
+  if (emailErrors.length) {
+    errors['email'] = emailErrors;
   }
 
   return errors;

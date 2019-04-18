@@ -5,12 +5,13 @@ describe('Users reducer', () => {
   describe('initialization', () => {
     describe('with default', () => {
       it("should be return empty items and not loading", () => {
-        expect(users()).toEqual({ items: {}, is_loading: false, is_saving: false });
+        expect(users()).toEqual({ items: {}, isProcessing: false, error: '', validErrors: {} });
       });
     });
 
     describe('with store and empty action', () => {
-      let state = { items: { 1: { id: 1, first_name: 'Test', last_name: 'Testov' } }, is_loading: false, is_saving: false };
+      let state = { items: { 1: { id: 1, first_name: 'Test', last_name: 'Testov' } }, isProcessing: false, error: '',
+          validErrors: {} };
 
       it("should be return not changed store", () => {
         expect(users(state)).toEqual(state);
@@ -18,59 +19,63 @@ describe('Users reducer', () => {
     });
   });
 
-  describe('loading', () => {
-    const state = { items: {}, is_loading: false, is_saving: false };
-    const expectedState = { items: {}, is_loading: true, is_saving: false };
+  describe('processing', () => {
+    const state = { items: {}, isProcessing: false, error: '', validErrors: { email: ['is empty'] } };
+    const expectedState = { items: {}, isProcessing: true, error: '', validErrors: {} };
 
-    it("should be changed loading state", () => {
-      expect(users(state, UsersActions.loadingUsers())).toEqual(expectedState);
+    it("should be changed processing state and clear errors", () => {
+      expect(users(state, UsersActions.processingUsers())).toEqual(expectedState);
+    });
+  });
+
+  describe('process error', () => {
+    const error = 'bad request';
+    const state = { items: {}, isProcessing: true, error: '', validErrors: {} };
+    const expectedState = { items: {}, isProcessing: false, error: error, validErrors: {} };
+
+    it("should be changed processing and error", () => {
+      expect(users(state, UsersActions.processUsersError(error))).toEqual(expectedState);
+    });
+  });
+
+  describe('validation errors`', () => {
+    const errors = { username: ['is empty'], email: ['is invalid'] };
+    const state = { items: {}, isProcessing: true, error: '', validErrors: {} };
+    const expectedState = { items: {}, isProcessing: false, error: '', validErrors: errors };
+
+    it("should be changed processing and errors", () => {
+      expect(users(state, UsersActions.validationUserErrors(errors))).toEqual(expectedState);
     });
   });
 
   describe('loaded', () => {
     const loadedUsers = { 1: { id: 1, first_name: 'Test', last_name: 'Testov' } };
-    const state = { items: {}, is_loading: true, is_saving: false };
-    const expectedState = { items: loadedUsers, is_loading: false, is_saving: false };
+    const state = { items: {}, isProcessing: true, error: '', validErrors: {} };
+    const expectedState = { items: loadedUsers, isProcessing: false, error: '', validErrors: {} };
 
-    it("should be changed users and loading state", () => {
+    it("should be changed users and processing state", () => {
       expect(users(state, UsersActions.loadedUsers(loadedUsers))).toEqual(expectedState);
     });
   });
 
-  describe('load error', () => {
-    const state = { items: {}, is_loading: true, is_saving: false };
-    const expectedState = { items: {}, is_loading: false, is_saving: false };
-
-    it("should be changed users and loading state", () => {
-      expect(users(state, UsersActions.loadUsersError())).toEqual(expectedState);
-    });
-  });
-
-  describe('adding', () => {
-    const state = { items: { 1: { id: 1, first_name: 'Test', last_name: 'Testov' } }, is_loading: false, is_saving: false };
-    const expectedState = { items: { 1: { id: 1, first_name: 'Test', last_name: 'Testov' } }, is_loading: false, is_saving: true };
-
-    it("should be changed aditing state", () => {
-      expect(users(state, UsersActions.addingUser())).toEqual(expectedState);
-    });
-  });
-
-  describe('added user', () => {
+  describe('added', () => {
     const user = { id: 2, first_name: 'New', last_name: 'User' };
     const state = {
       items: {
         1: { id: 1, first_name: 'Test', last_name: 'Testov' }
       },
-      is_loading: false,
-      is_saving: true
+      isProcessing: true,
+      error: '',
+      validErrors: {}
     };
     const expectedState = {
       items: {
         2: { id: 2, first_name: 'New', last_name: 'User' },
         1: { id: 1, first_name: 'Test', last_name: 'Testov' }
       },
-      is_loading: false,
-      is_saving: false
+      isProcessing: false,
+      error: '',
+      validErrors: {}
     };
 
     it("should be added to items", () => {
@@ -78,39 +83,22 @@ describe('Users reducer', () => {
     });
   });
 
-  describe('add error', () => {
-    const state = { items: { 1: { id: 1, first_name: 'Test', last_name: 'Testov' } }, is_loading: false, is_saving: true };
-    const expectedState = { items: { 1: { id: 1, first_name: 'Test', last_name: 'Testov' } }, is_loading: false, is_saving: false };
-
-    it("should be changed adding state", () => {
-      expect(users(state, UsersActions.addUserError())).toEqual(expectedState);
-    });
-  });
-
-  describe('editing', () => {
-    const state = { items: { 1: { id: 1, first_name: 'Test', last_name: 'Testov' } }, is_loading: false, is_saving: false };
-    const expectedState = { items: { 1: { id: 1, first_name: 'Test', last_name: 'Testov' } }, is_loading: false, is_saving: true };
-
-    it("should be changed editing state", () => {
-      expect(users(state, UsersActions.editingUser())).toEqual(expectedState);
-    });
-  });
-
   describe('edited', () => {
-    const state = { items: { 1: { id: 1, first_name: 'Test', last_name: 'Testov' } }, is_loading: false, is_saving: true };
-    const expectedState = { items: { 1: { id: 1, first_name: 'New', last_name: 'Testov' } }, is_loading: false, is_saving: false };
+    const state = { items: { 1: { id: 1, first_name: 'Test', last_name: 'Testov' } }, isProcessing: true, error: '', validErrors: {} };
+    const expectedState = { items: { 1: { id: 1, first_name: 'New', last_name: 'Testov' } }, isProcessing: false,
+        error: '', validErrors: {} };
 
-    it("should be changed user and editing state", () => {
+    it("should be changed user and processing state", () => {
       expect(users(state, UsersActions.editedUser(1, { first_name: 'New' }))).toEqual(expectedState);
     });
   });
 
-  describe('edit error', () => {
-    const state = { items: { 1: { id: 1, first_name: 'Test', last_name: 'Testov' } }, is_loading: false, is_saving: true };
-    const expectedState = { items: { 1: { id: 1, first_name: 'Test', last_name: 'Testov' } }, is_loading: false, is_saving: false };
+  describe('removed', () => {
+    const state = { items: { 1: { id: 1, first_name: 'Test', last_name: 'Testov' } }, isProcessing: true, error: '', validErrors: {} };
+    const expectedState = { items: {}, isProcessing: false, error: '', validErrors: {} };
 
-    it("should be changed editing state", () => {
-      expect(users(state, UsersActions.editUserError())).toEqual(expectedState);
+    it("should be removed user and change processing state", () => {
+      expect(users(state, UsersActions.removedUser(1))).toEqual(expectedState);
     });
   });
 });

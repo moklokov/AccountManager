@@ -1,15 +1,15 @@
-import { loadingUsers, loadedUsers, loadUsersError } from '../actions/users'
+import { processingUsers, processingUsersError, loadedUsers } from '../actions/users'
 import Logger from '../logger'
 
 export default function loadUsersService() {
   return async function (dispatch, getStore, api) {
     try {
-      dispatch(loadingUsers());
+      dispatch(processingUsers());
       const users = await api.users.getUsers();
       dispatch(loadedUsers(users));
     } catch (error) {
       Logger.info(error);
-      dispatch(loadUsersError());
+      dispatch(processingUsersError(error));
     }
   }
 }

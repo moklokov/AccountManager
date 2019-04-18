@@ -34,8 +34,9 @@ describe('Users API', () => {
     it("should be updated firstname", async () => {
       const createdUser = await api.createUser(user);
       const attrs = { firstname: 'Changed firstname' };
-      const updatedUser = await api.updateUser(createdUser.id, attrs);
-      expect(updatedUser).toMatchObject({ ...createdUser, ...attrs });
+      const updateUser = { ...createdUser, ...attrs };
+      const updatedUser = await api.updateUser(updateUser);
+      expect(updatedUser).toMatchObject(updateUser);
     });
   });
 

@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 
 import api from '../../api'
-import { removingUser, removedUser } from '../../actions/users'
+import { processingUsers, removedUser } from '../../actions/users'
 import removeUserService from '../../services/remove_user_service'
 import { user } from '../../__fixtures__/users'
 
@@ -20,7 +20,7 @@ describe('Remove User Service', () => {
   it("should be changed status and remove user", async () => {
     await store.dispatch(removeUserService(1));
     const actions = store.getActions();
-    expect(actions[0]).toEqual(removingUser());
+    expect(actions[0]).toEqual(processingUsers());
     expect(actions[1]).toEqual(removedUser(1));
   });
 

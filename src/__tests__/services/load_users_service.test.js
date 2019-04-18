@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 
 import api from '../../api'
-import { loadingUsers, loadedUsers } from '../../actions/users'
+import { processingUsers, loadedUsers } from '../../actions/users'
 import loadUsersService from '../../services/load_users_service'
 import { user } from '../../__fixtures__/users'
 
@@ -21,7 +21,7 @@ describe('Load Users Service', () => {
   it("should be changed status and loaded all users", async () => {
     await store.dispatch(loadUsersService());
     const actions = store.getActions();
-    expect(actions[0]).toEqual(loadingUsers());
+    expect(actions[0]).toEqual(processingUsers());
     expect(actions[1]).toEqual(loadedUsers(users));
   });
 
