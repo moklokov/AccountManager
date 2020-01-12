@@ -1,28 +1,29 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import "typeface-roboto";
+import React from "react";
+import { Route, Switch } from "react-router-dom";
+import CssBaseline from "@material-ui/core/CssBaseline";
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+import Header from "./components/common/header";
+import Home from "./components/pages/home";
+import Edit from "./components/pages/edit";
+import Create from "./components/pages/create";
+import Show from "./components/pages/show";
+
+function App() {
+  return (
+    <div>
+      <CssBaseline />
+      <Header />
+      <div className="content">
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route path="/users/:id/edit" component={Edit} />
+          <Route path="/users/new" component={Create} />
+          <Route path="/users/:id" component={Show} />
+        </Switch>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default App;

@@ -1,4 +1,4 @@
-import { processingUsers, removedUser, processingUsersError } from '../actions/users'
+import { processingUsers, removedUser, processUsersError } from '../actions/users'
 import Logger from '../logger'
 
 export default function removeUserService(id) {
@@ -9,7 +9,7 @@ export default function removeUserService(id) {
       dispatch(removedUser(id));
     } catch (error) {
       Logger.info(error);
-      dispatch(processingUsersError(error));
+      dispatch(processUsersError(error));
     }
   }
 }
