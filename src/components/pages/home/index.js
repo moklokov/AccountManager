@@ -10,6 +10,10 @@ import Users from "./users";
 import removeUserService from "../../../services/remove_user_service";
 import loadUsersService from "../../../services/load_users_service";
 
+import { createUser } from "../../../api/users";
+
+window.createUser = createUser;
+
 class Home extends Component {
   componentDidMount() {
     this.props.loadUsers();

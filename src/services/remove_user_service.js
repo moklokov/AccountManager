@@ -1,8 +1,12 @@
-import { processingUsers, removedUser, processUsersError } from '../actions/users'
-import Logger from '../logger'
+import {
+  processingUsers,
+  removedUser,
+  processUsersError
+} from "../actions/users";
+import Logger from "../logger";
 
 export default function removeUserService(id) {
-  return async function (dispatch, getStore, api) {
+  return async function(dispatch, getStore, api) {
     try {
       dispatch(processingUsers());
       await api.users.removeUser(id);
@@ -11,5 +15,5 @@ export default function removeUserService(id) {
       Logger.info(error);
       dispatch(processUsersError(error));
     }
-  }
+  };
 }
