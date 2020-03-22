@@ -1,21 +1,20 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Typography } from "@material-ui/core";
 import { connect } from "react-redux";
+import { withStyles } from "@material-ui/core/styles";
 
+import styles from "./styles.css";
 import Form from "../../common/form/index";
 import createUserService from "../../../services/create_user_service";
 
 class Create extends Component {
   render() {
-    const { validErrors } = this.props;
+    const { validErrors, classes } = this.props;
     let date = new Date();
     date.setFullYear(date.getFullYear() - 18);
     return (
       <>
-        <Typography align="center">
-          <h2 className="text">Create user</h2>
-        </Typography>
+        <h2 className={classes.title}>Create user</h2>
         <Form
           fields={{
             username: "",
@@ -50,7 +49,8 @@ class Create extends Component {
 }
 
 Create.propTypes = {
-  validErrors: PropTypes.object.isRequired
+  validErrors: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => {
@@ -63,4 +63,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Create);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(Create));

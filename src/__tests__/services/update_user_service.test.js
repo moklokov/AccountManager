@@ -1,13 +1,17 @@
-import 'fake-indexeddb/auto'
-import configureMockStore from 'redux-mock-store'
-import thunk from 'redux-thunk'
+import "fake-indexeddb/auto";
+import configureMockStore from "redux-mock-store";
+import thunk from "redux-thunk";
 
-import api from '../../api'
-import { processingUsers, validationUserErrors, editedUser } from '../../actions/users'
-import updateUserService from '../../services/update_user_service'
-import { user } from '../../__fixtures__/users'
+import api from "../../api";
+import {
+  processingUsers,
+  validationUserErrors,
+  editedUser
+} from "../../actions/users";
+import updateUserService from "../../services/update_user_service";
+import { user } from "../../__fixtures__/users";
 
-describe('Update User Service', () => {
+describe("Update User Service", () => {
   beforeEach(async () => {
     await api.users.clear();
     store.clearActions();
@@ -17,7 +21,7 @@ describe('Update User Service', () => {
   const mockStore = configureMockStore(middlewares);
   const store = mockStore();
 
-  const attrs = { firstname: 'New user' };
+  const attrs = { firstname: "New user", updatedAt: new Date() };
 
   it("should be changed status and update user", async () => {
     const createdUser = await api.users.createUser(user);
@@ -30,7 +34,7 @@ describe('Update User Service', () => {
 
   it("should be changed user", async () => {
     const createdUser = await api.users.createUser(user);
-    const updateUser = { ...createdUser, firstname: 'New user' };
+    const updateUser = { ...createdUser, firstname: "New user" };
     await store.dispatch(updateUserService(createdUser.id, updateUser));
     const users = await api.users.getUsers();
     expect(users).toHaveLength(1);

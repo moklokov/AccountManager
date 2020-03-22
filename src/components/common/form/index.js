@@ -54,7 +54,7 @@ const genders = [
 const Form = ({ classes, fields, errors, onSubmit, onCancel }) => (
   <Formik initialValues={fields} onSubmit={onSubmit}>
     {({ values, handleChange, handleSubmit, setFieldValue }) => (
-      <form autocomplete="off" onSubmit={handleSubmit}>
+      <form autoComplete="off" onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={6}>
             <FormField
@@ -99,7 +99,7 @@ const Form = ({ classes, fields, errors, onSubmit, onCancel }) => (
             <FormField
               label="First name"
               name="firstname"
-              valule={values.firstname}
+              value={values.firstname}
               error={errors.firstname}
               onChange={handleChange}
             />
@@ -108,7 +108,7 @@ const Form = ({ classes, fields, errors, onSubmit, onCancel }) => (
             <FormField
               label="Last name"
               name="lastname"
-              valule={values.lastname}
+              value={values.lastname}
               error={errors.lastname}
               onChange={handleChange}
             />

@@ -29,7 +29,7 @@ const FormField = ({
 );
 
 FormField.propTypes = {
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   name: PropTypes.string,
